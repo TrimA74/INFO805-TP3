@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>A small introduction to three.js webgl [1]</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="css/basic.css">
+  
+    <script src="three.js"></script>
+    <script src="js/Detector.js"></script>
+    <script type="text/javascript">
+    // (I) Put all your code here.
+    </script>
+  </head>
+  <body>
+    <div id="info"> a first three.js example </div>
+    <canvas id="webglcanvas" style="border: none;background-color:#000000"
+        width="600" height="500"></canvas>
+    <!-- We run the WebGL code at the end to be sure that the document is loaded.
+      -->
+      
+    <script src="index.js"></script>
+    <script>
+      // We put the starting point of the javascript here, so that the whole page
+      // is loaded before WebGL code is executed.
+      init(); run();
+    </script> 
+  </body>
+</html>
