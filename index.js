@@ -6,7 +6,10 @@ var renderer = null;
 var scene    = null;
 var camera   = null;
 var earth     = null;
+var earthGroup = null;
+var moonGroup = null;
 var soleil = null;
+var moon = null;
 var curTime  = Date.now();
 
 // This function is called whenever the document is loaded
@@ -25,6 +28,9 @@ function init() {
     // Add  a camera so we can view the scene
     camera = new THREE.PerspectiveCamera( 45, canvas.width / canvas.height,
         1, 4000 );
+    camera.position.x = 0;
+    camera.position.y = 0;
+    camera.position.z = 20;
     // Create a texture-mapped cube and add it to the scene
     // First, create the texture map
     var mapUrl = "images/earth_atmos_2048.jpg";
@@ -41,24 +47,43 @@ function init() {
 
     // Move the mesh back from the camera and tilt it toward the viewer
 
-    earth.position.z = -30;
-    earth.position.y = 5;
+    earth.position.z = -8;
+    earth.position.y = 0;
+    earth.position.x = -3;
     earth.rotation.x = Math.PI / 5;
     earth.rotation.y = 30;
 
-    // Finally, add the mesh to our scene
-    scene.add( earth );
 
     // Add a white point light
     light = new THREE.PointLight( 0xffffff, 1.5);
-    light.position.set( 0, -5 ,-30 );
-    scene.add( light );
+    light.position.set( 0, 0 ,0 );
 
-    var soleilGeometry = new THREE.SphereGeometry( 3, 32, 32 );
-    var soleilMaterial = new THREE.MeshBasicMaterial( {color: 0xfff354} );
-    var soleilSphere = new THREE.Mesh( soleilGeometry, soleilMaterial );
-    soleilSphere.position.set( 0,-5,-30 );
-    scene.add( soleilSphere );
+    var soleilGeometry = new THREE.SphereGeometry( 2, 32, 32 );
+    var soleilMaterial = new THREE.MeshBasicMaterial( {color: 0xfff354} );soleil = new THREE.Mesh( soleilGeometry, soleilMaterial );
+    soleil.position.set( 0,0,0 );
+
+
+    var moonGeometry = new THREE.SphereGeometry( 0.5, 32, 32 );
+    var mapMoonUrl = "images/moon_1024.jpg";
+    var mapMoon    = new THREE.TextureLoader().load( mapMoonUrl );
+    var moonMaterial = new THREE.MeshPhongMaterial({map: mapMoon});
+    moon = new THREE.Mesh( moonGeometry, moonMaterial );
+    moon.position.set( 0,0,-3 );
+
+
+    earthGroup = new THREE.Group();
+    earthGroup.position.set(0,0,0);
+    moonGroup = new THREE.Group();
+    moonGroup.position.set( -3,0,-8 );
+
+    earthGroup.add(earth);
+    moonGroup.add(moon);
+
+    earthGroup.add(moonGroup)
+
+    scene.add( soleil );
+    scene.add( earthGroup );
+    scene.add( light );
 }
 
 // This function is called regularly to update the canvas webgl.
@@ -90,5 +115,12 @@ function animate() {
     // Example: rotation cube
     var angle = 0.1 * Math.PI * 2 * fracTime; // one turn per 10 second.
     earth.rotation.y += angle;
+
+    var angle = fracTime * Math.PI * 2;
+// Notez que l'axe y est l'axe "vertical" usuellement.
+    earthGroup.rotation.y += angle / 365; // la terre tourne en 365 jours
+    earth.rotation.y      += angle; // et en un jour sur elle-même
+    moonGroup.rotation.y  += angle / 28; // la lune tourne en 28 jours autour de la terre
+    moon.rotation.y       += angle /28; // et en 28 jours aussi sur elle-même pour faire face à la terre
 }
   
